@@ -19,3 +19,8 @@ test:
 .PHONY: build
 build: test
 		$(GO_BUILD) -v -gcflags "-N -l" -o $(TARGET)
+
+.PHONY: docker
+docker:
+		docker build -t wine .
+		docker run --rm -p 8000:8000 wine

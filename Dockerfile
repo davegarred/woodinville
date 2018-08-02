@@ -1,9 +1,12 @@
 FROM golang:1.8
 
-WORKDIR /go/src/app
-COPY . .
+WORKDIR /app
 
-RUN go get -d -v github.com/stretchr/testify/assert
-RUN go install -v ./...
+# Set an env var that matches your github repo name, replace treeder/dockergo here with your repo name
+ENV SRC_DIR=/go/src/github.com/davegarred/woodinville/
+# Add the source code:
+ADD . $SRC_DIR
 
-CMD ["app"]
+RUN cd $SRC_DIR; go build -o woodinville; cp woodinville /app/
+ENTRYPOINT ["./woodinville"]
+#CMD ["./woodinville"]
