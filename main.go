@@ -3,10 +3,11 @@ package main
 import (
 	"os"
 	"os/signal"
+	"github.com/davegarred/woodinville/web"
 )
 
 func main() {
-	s := Serve()
+	s := web.Serve()
 	waitForSigint()
 	s.Shutdown()
 }

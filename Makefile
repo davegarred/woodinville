@@ -1,14 +1,17 @@
+GO_GET := go get -u
+GO_CLEAN := go clean
 GO_TEST := go test
 GO_BUILD := go build
 TARGET := wine
 
 .PHONY: deps
 deps:
-	go get -u github.com/stretchr/testify/assert
+	$(GO_GET) github.com/stretchr/testify/assert
+	$(GO_GET) github.com/looplab/eventhorizon
 
 .PHONY: clean
 clean:
-	go clean
+	$(GO_CLEAN)
 	rm -f $(TARGET)
 
 .PHONY: test
