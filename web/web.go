@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"context"
 	"github.com/davegarred/woodinville/storage"
+	"path"
 )
 
 const userCookie = "im"
@@ -79,13 +80,17 @@ func defaultPathResolver() pathResolver {
 	pr := make(map[string]func(http.ResponseWriter, *http.Request))
 	pr["GET /user"] = userFilter(userHandler)
 	pr["GET /location"] = userFilter(locationHandler)
+	pr["GET /do/*"] = userFilter(func(writer http.ResponseWriter, request *http.Request, id storage.UserId) {
+		fmt.Println(request.URL)
+	})
 	return pr
 }
 
 func (pr pathResolver) resolve(u string) func(http.ResponseWriter, *http.Request) {
-	f := pr[u]
-	if f == nil {
-		return roothandler
+	for pattern, handler := range pr {
+		if ok, err := path.Match(pattern, u); ok &&  err == nil {
+			return handler
+		}
 	}
-	return f
+	return roothandler
 }
