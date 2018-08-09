@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/davegarred/woodinville/cqrs"
+	"github.com/davegarred/cqrs"
 	"errors"
 )
 

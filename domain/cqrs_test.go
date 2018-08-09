@@ -2,7 +2,7 @@ package domain
 
 import (
 	"testing"
-	"github.com/davegarred/woodinville/cqrs"
+	"github.com/davegarred/cqrs"
 	"fmt"
 )
 
