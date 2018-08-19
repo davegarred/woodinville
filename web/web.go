@@ -40,27 +40,40 @@ func (srv Server) Shutdown() {
 }
 
 func roothandler(w http.ResponseWriter, r *http.Request) {
-	signinValues := r.URL.Query()[userCookie]
-	if len(signinValues) == 1 {
+	userId := userIdFromParams(r)
+	if len(userId) > 0 {
 		http.SetCookie(w, &http.Cookie{
 			Name:   userCookie,
-			Value:  signinValues[0],
+			Value:  userId,
 			MaxAge: 0,
 		})
-		fmt.Println("User " + signinValues[0] + " logged in")
+		fmt.Println("User " + userId + " logged in")
 	}
 }
+
+func userIdFromParams(r *http.Request) string {
+	signinValues := r.URL.Query()[userCookie]
+	if len(signinValues) == 1 {
+		return signinValues[0]
+	}
+	return ""
+}
+
 func userFilter(f func(http.ResponseWriter, *http.Request, storage.UserId)) func(http.ResponseWriter, *http.Request) {
 	result := func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie(userCookie)
-		if err != nil {
-			if err != http.ErrNoCookie {
-				panic(err)
+		userCode := userIdFromParams(r)
+		if userCode == "" {
+			cookie, err := r.Cookie(userCookie)
+			if err != nil {
+				if err != http.ErrNoCookie {
+					panic(err)
+				}
+				w.WriteHeader(401)
+				return
 			}
-			w.WriteHeader(401)
-			return
+			userCode = cookie.Value
 		}
-		userId := storage.UserId(cookie.Value)
+		userId := storage.UserId(userCode)
 		user := storage.FindUser(userId)
 		if user == nil {
 			w.WriteHeader(403)
@@ -69,6 +82,12 @@ func userFilter(f func(http.ResponseWriter, *http.Request, storage.UserId)) func
 		f(w, r, userId)
 	}
 	return result
+}
+func corsFilter(f func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		f(w,r)
+	}
 }
 
 
@@ -89,8 +108,8 @@ func defaultPathResolver() pathResolver {
 func (pr pathResolver) resolve(u string) func(http.ResponseWriter, *http.Request) {
 	for pattern, handler := range pr {
 		if ok, err := path.Match(pattern, u); ok &&  err == nil {
-			return handler
+			return corsFilter(handler)
 		}
 	}
-	return roothandler
+	return corsFilter(roothandler)
 }
