@@ -23,5 +23,5 @@ func TestSerialization(t *testing.T) {
 	area := FindArea()
 	ser,err := json.Marshal(area)
 	assert.Nil(t, err)
-	assert.Equal(t, `[{"id":"DAR","name":"Darby","address":"14450 Redmond-Woodinville Rd NE","city":"Woodinville","zip":"98072"}]`, string(ser))
+	assert.Equal(t, `[{"id":"DAR","lat":47.73222,"long":-122.14273,"name":"Darby","address":"14450 Redmond-Woodinville Rd NE","city":"Woodinville","zip":"98072"}]`, string(ser))
 }

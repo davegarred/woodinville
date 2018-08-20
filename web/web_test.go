@@ -46,5 +46,5 @@ func TestServer(t *testing.T) {
 
 	body, err := ioutil.ReadAll(res.Body)
 	assert.Nil(err)
-	assert.Equal(`{"id":"DAV","name":"Dave","visits":{}}`, string(body))
+	assert.Equal(`{"id":"DAV","name":"Dave","admin":true,"visits":{}}`, string(body))
 }

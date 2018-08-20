@@ -6,8 +6,10 @@ import (
 	"github.com/davegarred/woodinville/web"
 )
 
+var key = "AIzaSyC4R6AN7SmujjPUIGKdyao2Kqitzr1kiRg"
+
 func main() {
-	s := web.Serve()
+	s := web.Serve(key)
 	waitForSigint()
 	s.Shutdown()
 }

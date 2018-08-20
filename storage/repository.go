@@ -1,12 +1,14 @@
 package storage
 
-var locations map[LocationId]*Location
+import "github.com/davegarred/woodinville/domain"
+
+var locations map[domain.WineryId]*Location
 var area []*Location
-var users map[UserId]*User
+var users map[domain.UserId]*User
 
 func init() {
-	users = make(map[UserId]*User)
-	locations = make(map[LocationId]*Location)
+	users = make(map[domain.UserId]*User)
+	locations = make(map[domain.WineryId]*Location)
 	area = make([]*Location, 0)
 
 	addUser("MEL", "Melissa", false)
@@ -15,9 +17,8 @@ func init() {
 	addLocation(&Location{"DAR", 47.7322201,-122.14273, "Darby","14450 Redmond-Woodinville Rd NE","Woodinville", "98072"})
 }
 
-type LocationId string
 type Location struct {
-	Id   LocationId	`json:"id"`
+	Id   domain.WineryId	`json:"id"`
 	Lat float32 	`json:"lat"`
 	Long float32	`json:"long"`
 	Name string	`json:"name"`
@@ -26,26 +27,25 @@ type Location struct {
 	Zip string `json:"zip"`
 }
 
-type UserId string
 type User struct {
-	Id UserId `json:"id"`
+	Id domain.UserId `json:"id"`
 	Name string `json:"name"`
 	Admin bool `json:"admin"`
-	Visits map[LocationId][]string `json:"visits"`
+	Visits map[domain.WineryId][]string `json:"visits"`
 }
 func FindArea() []*Location {
 	return area
 }
-func FindLocation(id LocationId) *Location {
+func FindLocation(id domain.WineryId) *Location {
 	return locations[id]
 }
 
-func FindUser(id UserId) *User {
+func FindUser(id domain.UserId) *User {
 	return users[id]
 }
 
-func addUser(id UserId, name string, admin bool) {
-	users[id] = &User{id, name, admin,make(map[LocationId][]string)}
+func addUser(id domain.UserId, name string, admin bool) {
+	users[id] = &User{id, name, admin,make(map[domain.WineryId][]string)}
 }
 func addLocation(l *Location) {
 	locations[l.Id] = l
