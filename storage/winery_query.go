@@ -5,7 +5,7 @@ import (
 )
 
 type WineryQuery struct {
-	domain.WineryId `json:"wineryId"`
+	domain.WineryId `json:"id"`
 	Lat     float32 `json:"lat"`
 	Long    float32 `json:"long"`
 	Name    string  `json:"name"`
@@ -16,6 +16,7 @@ type WineryQuery struct {
 
 
 func (q *WineryQuery) OnWineryCreated(e domain.WineryCreated) {
+	//q := FindWineryQuery(e.WineryId)
 	q.WineryId = e.WineryId
 	q.Name = e.Name
 }
