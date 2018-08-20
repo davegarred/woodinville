@@ -15,19 +15,24 @@ type WineryQuery struct {
 }
 
 
-func (q *WineryQuery) OnWineryCreated(e domain.WineryCreated) {
-	//q := FindWineryQuery(e.WineryId)
+func (*UserWineryQueryEventListener) OnWineryCreated(e domain.WineryCreated) {
+	q := &WineryQuery{}
 	q.WineryId = e.WineryId
 	q.Name = e.Name
+	UpdateLocation(e.WineryId, q)
 }
 
-func (q *WineryQuery) OnWineryPositionUpdated(e domain.WineryPositionUpdated) {
+func (*UserWineryQueryEventListener) OnWineryPositionUpdated(e domain.WineryPositionUpdated) {
+	q := FindLocation(e.WineryId)
 	q.Lat = e.Lat
 	q.Long = e.Long
+	UpdateLocation(e.WineryId, q)
 }
 
-func (q *WineryQuery) OnWineryAddressUpdated(e domain.WineryAddressUpdated) {
+func (*UserWineryQueryEventListener) OnWineryAddressUpdated(e domain.WineryAddressUpdated) {
+	q := FindLocation(e.WineryId)
 	q.Address = e.Address
 	q.City = e.City
 	q.Zip = e.Zip
+	UpdateLocation(e.WineryId, q)
 }

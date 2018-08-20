@@ -18,7 +18,7 @@ func (c SetUserAdmin) TargetAggregateId() string {
 
 type AddVisit struct {
 	UserId
-	time string
+	Time string
 	WineryId
 }
 func (c AddVisit) TargetAggregateId() string {

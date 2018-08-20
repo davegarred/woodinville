@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"context"
 	"path"
-	"github.com/davegarred/woodinville/domain"
 )
 
 const userCookie = "im"
@@ -50,9 +49,7 @@ func defaultPathResolver() pathResolver {
 	pr["GET /user"] = userFilter(userHandler)
 	pr["GET /location"] = userFilter(locationHandler)
 	pr["GET /details"] = userFilter(detailsHandler)
-	pr["GET /do/*"] = userFilter(func(writer http.ResponseWriter, request *http.Request, id domain.UserId) {
-		fmt.Println(request.URL)
-	})
+	pr["POST /do/*"] = userFilter(commandHandler)
 	return pr
 }
 

@@ -6,14 +6,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/davegarred/woodinville/domain"
+	"io/ioutil"
 )
 
 func locationHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 	ser, err := json.Marshal(storage.FindArea())
 	if err != nil {
-		http.NotFound(w,r)
+		http.NotFound(w, r)
 	}
-	_,err = w.Write(ser)
+	_, err = w.Write(ser)
 	if err != nil {
 		panic(err)
 	}
@@ -22,9 +23,9 @@ func locationHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 func userHandler(w http.ResponseWriter, r *http.Request, userId domain.UserId) {
 	ser, err := json.Marshal(storage.FindUser(userId))
 	if err != nil {
-		http.NotFound(w,r)
+		http.NotFound(w, r)
 	}
-	_,err = w.Write(ser)
+	_, err = w.Write(ser)
 	if err != nil {
 		panic(err)
 	}
@@ -33,14 +34,80 @@ func userHandler(w http.ResponseWriter, r *http.Request, userId domain.UserId) {
 type details struct {
 	MapsApi string `json:"maps_api"`
 }
+
 func detailsHandler(w http.ResponseWriter, r *http.Request, userId domain.UserId) {
 	ser, err := json.Marshal(details{maps_key})
 	if err != nil {
-		http.NotFound(w,r)
+		http.NotFound(w, r)
 	}
-	_,err = w.Write(ser)
+	_, err = w.Write(ser)
 	if err != nil {
 		panic(err)
+	}
+}
+
+func commandHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
+	commandName := r.URL.Path[4:]
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+	switch commandName {
+	case "CreateUser":
+		command := domain.CreateUser{}
+		err := json.Unmarshal(body, &command)
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(400)
+			return
+		}
+		storage.Dispatch(command)
+	case "SetUserAdmin":
+		command := &domain.SetUserAdmin{}
+		err := json.Unmarshal(body, command)
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(400)
+			return
+		}
+		storage.Dispatch(*command)
+	case "AddVisit":
+		command := &domain.AddVisit{}
+		err := json.Unmarshal(body, command)
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(400)
+			return
+		}
+		storage.Dispatch(*command)
+	case "CreateWinery":
+		command := &domain.CreateWinery{}
+		err := json.Unmarshal(body, command)
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(400)
+			return
+		}
+		storage.Dispatch(*command)
+	case "UpdateWineryPosition":
+		command := &domain.UpdateWineryPosition{}
+		err := json.Unmarshal(body, command)
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(400)
+			return
+		}
+		storage.Dispatch(*command)
+	case "UpdateWineryAddress":
+		command := &domain.UpdateWineryAddress{}
+		err := json.Unmarshal(body, command)
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(400)
+			return
+		}
+		storage.Dispatch(*command)
 	}
 }
 
