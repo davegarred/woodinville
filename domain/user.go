@@ -28,6 +28,6 @@ func (w *Winery) HandleSetUserAdmin(c SetUserAdmin) ([]cqrs.Event, error) {
 }
 
 func (w *Winery) HandleAddVisit(c AddVisit) ([]cqrs.Event, error) {
-	return []cqrs.Event{VisitAdded{c.UserId, c.time, c.WineryId,}}, nil
+	return []cqrs.Event{VisitAdded{c.UserId, c.Time, c.WineryId,}}, nil
 }
 

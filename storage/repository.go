@@ -20,19 +20,24 @@ func init() {
 
 	users = make(map[domain.UserId]*UserQuery)
 	locations = make(map[domain.WineryId]*WineryQuery)
-	area = make([]*WineryQuery, 0)
 
 	addUser("MEL", "Melissa", false)
 	addUser("JO", "Joanne", false)
 	addUser("DAV", "Dave", true)
-	addLocation(&WineryQuery{"DAR", 47.7322201,-122.14273, "Darby","14450 Redmond-Woodinville Rd NE","Woodinville", "98072"})
+	addLocation(&WineryQuery{"DAR", 47.7318,-122.14036, "Darby","14450 Redmond-Woodinville Rd NE","Woodinville", "98072"})
 }
 
 func Dispatch(command cqrs.Command) {
 	commandGateway.Dispatch(command)
 }
 func FindArea() []*WineryQuery {
-	return area
+	result := make([]*WineryQuery, len(locations))
+	i := 0
+	for _,l := range locations {
+		result[i] = l
+		i++
+	}
+	return result
 }
 func FindLocation(id domain.WineryId) *WineryQuery {
 	return locations[id]
