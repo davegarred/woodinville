@@ -12,27 +12,43 @@ type WineryQuery struct {
 	Address string  `json:"address"`
 	City    string  `json:"city"`
 	Zip     string  `json:"zip"`
+	Visits map[domain.WineryId][]string `json:"visits"`
 }
 
+type WineryQueryEventListener struct {}
 
-func (*UserWineryQueryEventListener) OnWineryCreated(e domain.WineryCreated) {
+func (*WineryQueryEventListener) OnWineryCreated(e domain.WineryCreated) {
 	q := &WineryQuery{}
 	q.WineryId = e.WineryId
 	q.Name = e.Name
 	UpdateLocation(e.WineryId, q)
 }
 
-func (*UserWineryQueryEventListener) OnWineryPositionUpdated(e domain.WineryPositionUpdated) {
+func (*WineryQueryEventListener) OnWineryPositionUpdated(e domain.WineryPositionUpdated) {
 	q := FindLocation(e.WineryId)
 	q.Lat = e.Lat
 	q.Long = e.Long
 	UpdateLocation(e.WineryId, q)
 }
 
-func (*UserWineryQueryEventListener) OnWineryAddressUpdated(e domain.WineryAddressUpdated) {
+func (*WineryQueryEventListener) OnWineryAddressUpdated(e domain.WineryAddressUpdated) {
 	q := FindLocation(e.WineryId)
 	q.Address = e.Address
 	q.City = e.City
 	q.Zip = e.Zip
+	UpdateLocation(e.WineryId, q)
+}
+
+func (*WineryQueryEventListener) OnVisitAdded(e domain.VisitAdded) {
+	q := FindLocation(e.WineryId)
+	if q == nil {
+		return
+	}
+	locationVisits := q.Visits[e.WineryId]
+	if locationVisits == nil {
+		locationVisits = make([]string,0)
+	}
+	locationVisits = append(locationVisits, e.Time)
+	q.Visits[e.WineryId] = locationVisits
 	UpdateLocation(e.WineryId, q)
 }

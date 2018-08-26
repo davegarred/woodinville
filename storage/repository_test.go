@@ -15,13 +15,13 @@ func TestFindLocation(t *testing.T) {
 }
 
 func TestFindArea(t *testing.T) {
-	area := FindArea()
+	area := FindWineries()
 	assert.Equal(t, 1, len(area))
 }
 
 func TestSerialization(t *testing.T) {
-	area := FindArea()
+	area := FindWineries()
 	ser,err := json.Marshal(area)
 	assert.Nil(t, err)
-	assert.Equal(t, `[{"id":"DAR","lat":47.73222,"long":-122.14273,"name":"Darby","address":"14450 Redmond-Woodinville Rd NE","city":"Woodinville","zip":"98072"}]`, string(ser))
+	assert.Equal(t, `[{"id":"DAR","lat":47.7318,"long":-122.14036,"name":"Darby","address":"14450 Redmond-Woodinville Rd NE","city":"Woodinville","zip":"98072","visits":null}]`, string(ser))
 }

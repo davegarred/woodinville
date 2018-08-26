@@ -1,12 +1,9 @@
-FROM golang:1.8
+FROM ubuntu:18.04
 
 WORKDIR /app
 
-# Set an env var that matches your github repo name, replace treeder/dockergo here with your repo name
-ENV SRC_DIR=/go/src/github.com/davegarred/woodinville/
-# Add the source code:
-ADD . $SRC_DIR
+ADD wine /app
+RUN chmod 544 /app/wine
 
-RUN cd $SRC_DIR; go build -o woodinville; cp woodinville /app/
-ENTRYPOINT ["./woodinville"]
-#CMD ["./woodinville"]
+EXPOSE 8500
+ENTRYPOINT ["/app/wine"]

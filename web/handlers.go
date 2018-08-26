@@ -9,19 +9,22 @@ import (
 	"io/ioutil"
 )
 
-func locationHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
+func areaHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 	ser, err := json.Marshal(storage.FindArea())
-	if err != nil {
-		http.NotFound(w, r)
-	}
-	_, err = w.Write(ser)
-	if err != nil {
-		panic(err)
-	}
+	returnResult(w, r, ser, err)
+}
+
+func locationHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
+	ser, err := json.Marshal(storage.FindWineries())
+	returnResult(w, r, ser, err)
 }
 
 func userHandler(w http.ResponseWriter, r *http.Request, userId domain.UserId) {
 	ser, err := json.Marshal(storage.FindUser(userId))
+	returnResult(w, r, ser, err)
+}
+
+func returnResult(w http.ResponseWriter, r *http.Request, ser []byte, err error) {
 	if err != nil {
 		http.NotFound(w, r)
 	}
@@ -108,9 +111,17 @@ func commandHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 			return
 		}
 		storage.Dispatch(*command)
+	case "RecommendWinery":
+		command := &domain.RecommendWinery{}
+		err := json.Unmarshal(body, command)
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(400)
+			return
+		}
+		storage.Dispatch(*command)
 	}
 }
-
 
 func roothandler(w http.ResponseWriter, r *http.Request) {
 	userId := userIdFromParams(r)

@@ -23,7 +23,16 @@ test:
 build: test
 		$(GO_BUILD) -v -gcflags "-N -l" -o $(TARGET)
 
-.PHONY: docker
-docker:
+.PHONY: package
+package: build
 		docker build -t wine .
-		docker run --rm -p 8000:8000 wine
+		docker save -o wine_image.tar wine
+
+.PHONY: docker
+docker: package
+		docker run \
+			-d \
+			--name wine \
+			-p "8500:8500" \
+			--rm \
+			wine

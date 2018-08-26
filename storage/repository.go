@@ -5,9 +5,10 @@ import (
 	"github.com/davegarred/cqrs"
 )
 
-var area []*WineryQuery
+var wineries []*WineryQuery
 var users map[domain.UserId]*UserQuery
 var locations map[domain.WineryId]*WineryQuery
+var areaQuery *AreaQuery
 var eventStore cqrs.EventStore
 var commandGateway *cqrs.CommandGateway
 
@@ -16,7 +17,10 @@ func init() {
 	commandGateway = cqrs.NewCommandGateway(eventStore)
 	commandGateway.RegisterAggregate(&domain.User{})
 	commandGateway.RegisterAggregate(&domain.Winery{})
-	commandGateway.RegisterQueryEventHandlers(&UserWineryQueryEventListener{})
+	commandGateway.RegisterAggregate(&domain.Area{})
+	commandGateway.RegisterQueryEventHandlers(&UserQueryEventListener{})
+	commandGateway.RegisterQueryEventHandlers(&WineryQueryEventListener{})
+	commandGateway.RegisterQueryEventHandlers(&AreaQueryEventListener{})
 
 	users = make(map[domain.UserId]*UserQuery)
 	locations = make(map[domain.WineryId]*WineryQuery)
@@ -24,13 +28,22 @@ func init() {
 	addUser("MEL", "Melissa", false)
 	addUser("JO", "Joanne", false)
 	addUser("DAV", "Dave", true)
-	addLocation(&WineryQuery{"DAR", 47.7318,-122.14036, "Darby","14450 Redmond-Woodinville Rd NE","Woodinville", "98072"})
+	addLocation(&WineryQuery{"DAR", 47.7318,-122.14036, "Darby","14450 Redmond-Woodinville Rd NE","Woodinville", "98072", nil})
+	areaQuery = &AreaQuery{"SEA", []domain.WineryId{"DAR"}, []RecommendedWinery{}}
 }
 
 func Dispatch(command cqrs.Command) {
 	commandGateway.Dispatch(command)
 }
-func FindArea() []*WineryQuery {
+
+func FindArea() *AreaQuery {
+	return areaQuery
+}
+func UpdateArea(a *AreaQuery) {
+	areaQuery = a
+}
+
+func FindWineries() []*WineryQuery {
 	result := make([]*WineryQuery, len(locations))
 	i := 0
 	for _,l := range locations {
@@ -42,14 +55,13 @@ func FindArea() []*WineryQuery {
 func FindLocation(id domain.WineryId) *WineryQuery {
 	return locations[id]
 }
-
-func FindUser(id domain.UserId) *UserQuery {
-	return users[id]
-}
 func UpdateLocation(id domain.WineryId, q *WineryQuery) {
 	locations[id] = q
 }
 
+func FindUser(id domain.UserId) *UserQuery {
+	return users[id]
+}
 func UpdateUser(id domain.UserId, q *UserQuery) {
 	users[id] = q
 }
@@ -59,5 +71,5 @@ func addUser(id domain.UserId, name string, admin bool) {
 }
 func addLocation(l *WineryQuery) {
 	locations[l.WineryId] = l
-	area = append(area, l)
+	wineries = append(wineries, l)
 }

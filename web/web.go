@@ -21,7 +21,7 @@ type pathResolver map[string]func(http.ResponseWriter, *http.Request)
 func Serve(key string) Server {
 	maps_key = key
 	srv := &http.Server{
-		Addr:    ":8000",
+		Addr:    ":8500",
 		Handler: defaultPathResolver(),
 	}
 	serverClosed := make(chan struct{})
@@ -48,6 +48,7 @@ func defaultPathResolver() pathResolver {
 	pr := make(map[string]func(http.ResponseWriter, *http.Request))
 	pr["GET /user"] = userFilter(userHandler)
 	pr["GET /location"] = userFilter(locationHandler)
+	pr["GET /area"] = userFilter(areaHandler)
 	pr["GET /details"] = userFilter(detailsHandler)
 	pr["POST /do/*"] = userFilter(commandHandler)
 	return pr
