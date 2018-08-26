@@ -42,6 +42,7 @@ func userIdFromParams(r *http.Request) string {
 func corsFilter(f func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "*")
 		f(w,r)
 	}
 }
