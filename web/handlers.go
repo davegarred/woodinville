@@ -120,6 +120,16 @@ func commandHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 			return
 		}
 		storage.Dispatch(*command)
+	case "AddWineryWithAddress":
+		command := &domain.AddWineryWithAddress{}
+		err := json.Unmarshal(body, command)
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(400)
+			return
+		}
+		command.WineryId = domain.WineryId(storage.NextWineryIdentifier())
+		storage.Dispatch(*command)
 	}
 }
 

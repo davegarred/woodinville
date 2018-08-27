@@ -29,3 +29,15 @@ type UpdateWineryAddress struct {
 func (c UpdateWineryAddress) TargetAggregateId() string {
 	return string(c.WineryId)
 }
+
+type AddWineryWithAddress struct {
+	WineryId
+	Name    string
+	Address string
+	City    string
+	Zip     string
+}
+
+func (c AddWineryWithAddress) TargetAggregateId() string {
+	return string(c.WineryId)
+}

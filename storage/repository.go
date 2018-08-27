@@ -12,7 +12,13 @@ var areaQuery *AreaQuery
 var eventStore cqrs.EventStore
 var commandGateway *cqrs.CommandGateway
 
+var wineryIdentifierType IdentifierType
+var wineryIdentifierFactory *IdentifierFactory
+
 func init() {
+	wineryIdentifierType = IdentifierType("WL")
+	wineryIdentifierFactory = NewIdentifierFactory(wineryIdentifierType)
+
 	eventStore = cqrs.NewMemEventStore()
 	commandGateway = cqrs.NewCommandGateway(eventStore)
 	commandGateway.RegisterAggregate(&domain.User{})
@@ -32,6 +38,9 @@ func init() {
 	areaQuery = &AreaQuery{"SEA", []domain.WineryId{"DAR"}, []RecommendedWinery{}}
 }
 
+func NextWineryIdentifier() string {
+	return wineryIdentifierFactory.Next()
+}
 func Dispatch(command cqrs.Command) {
 	commandGateway.Dispatch(command)
 }

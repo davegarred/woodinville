@@ -29,3 +29,14 @@ func (w *Winery) HandleUpdateWineryAddress(c UpdateWineryAddress) ([]cqrs.Event,
 	}
 	return []cqrs.Event{event}, nil
 }
+
+func (w *Winery) HandleAddWineryWithAddress(c AddWineryWithAddress) ([]cqrs.Event, error) {
+	created := WineryCreated{c.WineryId, c.Name}
+	updated := WineryAddressUpdated{
+		c.WineryId,
+		c.Address,
+		c.City,
+		c.Zip,
+	}
+	return []cqrs.Event{created, updated}, nil
+}
