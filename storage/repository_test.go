@@ -25,3 +25,8 @@ func TestSerialization(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, `[{"id":"DAR","lat":47.7318,"long":-122.14036,"name":"Darby","address":"14450 Redmond-Woodinville Rd NE","city":"Woodinville","zip":"98072","visits":null}]`, string(ser))
 }
+
+func TestNextWineryIdentifier(t *testing.T) {
+	wineryIdentifierFactory = NewIdentifierFactory(wineryIdentifierType)
+	assert.Equal(t, "WL10001", wineryIdentifierFactory.Next())
+}

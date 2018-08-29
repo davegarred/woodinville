@@ -17,9 +17,9 @@ type UserQueryEventListener struct {}
 
 func (*UserQueryEventListener) OnUserCreated(e domain.UserCreated) {
 	fmt.Println(&cqrs.QueryEventListener{})
-	//q := FindUser(e.UserId)
 	q := &UserQuery{}
 	q.UserId = e.UserId
+	q.Name = e.Name
 	q.Visits = make(map[domain.WineryId][]string)
 	UpdateUser(e.UserId, q)
 }

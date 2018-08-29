@@ -18,6 +18,10 @@ clean:
 test:
 		$(GO_TEST) -v -short -cover github.com/davegarred/woodinville...
 
+.PHONY: cover
+cover:
+		go test -short -coverprofile=.coverage github.com/davegarred/woodinville...
+		go tool cover -html=.coverage
 
 .PHONY: build
 build: test

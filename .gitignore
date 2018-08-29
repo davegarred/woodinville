@@ -2,3 +2,4 @@
 /secrets.*
 /wine
 /wine_image.tar
+/.coverage

@@ -5,7 +5,7 @@ import (
 	"github.com/davegarred/cqrs"
 )
 
-var wineries []*WineryQuery
+//var wineries []*WineryQuery
 var users map[domain.UserId]*UserQuery
 var locations map[domain.WineryId]*WineryQuery
 var areaQuery *AreaQuery
@@ -80,5 +80,5 @@ func addUser(id domain.UserId, name string, admin bool) {
 }
 func addLocation(l *WineryQuery) {
 	locations[l.WineryId] = l
-	wineries = append(wineries, l)
+	//wineries = append(wineries, l)
 }

@@ -12,7 +12,7 @@ type WineryQuery struct {
 	Address string  `json:"address"`
 	City    string  `json:"city"`
 	Zip     string  `json:"zip"`
-	Visits map[domain.WineryId][]string `json:"visits"`
+	Visits map[domain.UserId][]string `json:"visits"`
 }
 
 type WineryQueryEventListener struct {}
@@ -21,6 +21,7 @@ func (*WineryQueryEventListener) OnWineryCreated(e domain.WineryCreated) {
 	q := &WineryQuery{}
 	q.WineryId = e.WineryId
 	q.Name = e.Name
+	q.Visits = make(map[domain.UserId][]string)
 	UpdateLocation(e.WineryId, q)
 }
 
@@ -44,11 +45,11 @@ func (*WineryQueryEventListener) OnVisitAdded(e domain.VisitAdded) {
 	if q == nil {
 		return
 	}
-	locationVisits := q.Visits[e.WineryId]
+	locationVisits := q.Visits[e.UserId]
 	if locationVisits == nil {
 		locationVisits = make([]string,0)
 	}
 	locationVisits = append(locationVisits, e.Time)
-	q.Visits[e.WineryId] = locationVisits
+	q.Visits[e.UserId] = locationVisits
 	UpdateLocation(e.WineryId, q)
 }
