@@ -1,43 +1,39 @@
-package storage
+package event_listener
 
 import (
 	"github.com/davegarred/woodinville/domain"
+	"github.com/davegarred/woodinville/query"
 	"github.com/davegarred/cqrs"
 	"fmt"
+	"github.com/davegarred/woodinville/storage"
 )
 
-type UserQuery struct {
-	domain.UserId `json:"id"`
-	Name   string `json:"name"`
-	Admin  bool `json:"admin"`
-	Visits map[domain.WineryId][]string `json:"visits"`
-}
 
 type UserQueryEventListener struct {}
 
 func (*UserQueryEventListener) OnUserCreated(e domain.UserCreated) {
 	fmt.Println(&cqrs.QueryEventListener{})
-	q := &UserQuery{}
+	q := &query.UserQuery{}
 	q.UserId = e.UserId
 	q.Name = e.Name
 	q.Visits = make(map[domain.WineryId][]string)
-	UpdateUser(e.UserId, q)
+	storage.UpdateUser(e.UserId, q)
 }
 
 func (*UserQueryEventListener) OnUserIsSetAsAdmin(e domain.UserIsSetAsAdmin) {
-	q := FindUser(e.UserId)
+	q := storage.FindUser(e.UserId)
 	q.Admin = true
-	UpdateUser(e.UserId, q)
+	storage.UpdateUser(e.UserId, q)
 }
 
 func (*UserQueryEventListener) OnUserIsSetAsNotAdmin(e domain.UserIsSetAsNotAdmin) {
-	q := FindUser(e.UserId)
+	q := storage.FindUser(e.UserId)
 	q.Admin = false
-	UpdateUser(e.UserId, q)
+	storage.UpdateUser(e.UserId, q)
 }
 
 func (*UserQueryEventListener) OnVisitAdded(e domain.VisitAdded) {
-	q := FindUser(e.UserId)
+	q := storage.FindUser(e.UserId)
 	if q == nil {
 		return
 	}
@@ -50,5 +46,5 @@ func (*UserQueryEventListener) OnVisitAdded(e domain.VisitAdded) {
 	}
 	locationVisits = append(locationVisits, e.Time)
 	q.Visits[e.WineryId] = locationVisits
-	UpdateUser(e.UserId, q)
+	storage.UpdateUser(e.UserId, q)
 }

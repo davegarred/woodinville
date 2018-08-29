@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/davegarred/woodinville/domain"
 	"io/ioutil"
+	"github.com/davegarred/woodinville/event_listener"
 )
 
 func areaHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
@@ -65,7 +66,7 @@ func commandHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 			w.WriteHeader(400)
 			return
 		}
-		storage.Dispatch(command)
+		event_listener.Dispatch(command)
 	case "SetUserAdmin":
 		command := &domain.SetUserAdmin{}
 		err := json.Unmarshal(body, command)
@@ -74,7 +75,7 @@ func commandHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 			w.WriteHeader(400)
 			return
 		}
-		storage.Dispatch(*command)
+		event_listener.Dispatch(*command)
 	case "AddVisit":
 		command := &domain.AddVisit{}
 		err := json.Unmarshal(body, command)
@@ -83,7 +84,7 @@ func commandHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 			w.WriteHeader(400)
 			return
 		}
-		storage.Dispatch(*command)
+		event_listener.Dispatch(*command)
 	case "CreateWinery":
 		command := &domain.CreateWinery{}
 		err := json.Unmarshal(body, command)
@@ -92,7 +93,7 @@ func commandHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 			w.WriteHeader(400)
 			return
 		}
-		storage.Dispatch(*command)
+		event_listener.Dispatch(*command)
 	case "UpdateWineryPosition":
 		command := &domain.UpdateWineryPosition{}
 		err := json.Unmarshal(body, command)
@@ -101,7 +102,7 @@ func commandHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 			w.WriteHeader(400)
 			return
 		}
-		storage.Dispatch(*command)
+		event_listener.Dispatch(*command)
 	case "UpdateWineryAddress":
 		command := &domain.UpdateWineryAddress{}
 		err := json.Unmarshal(body, command)
@@ -110,7 +111,7 @@ func commandHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 			w.WriteHeader(400)
 			return
 		}
-		storage.Dispatch(*command)
+		event_listener.Dispatch(*command)
 	case "RecommendWinery":
 		command := &domain.RecommendWinery{}
 		err := json.Unmarshal(body, command)
@@ -119,7 +120,7 @@ func commandHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 			w.WriteHeader(400)
 			return
 		}
-		storage.Dispatch(*command)
+		event_listener.Dispatch(*command)
 	case "AddWineryWithAddress":
 		command := &domain.AddWineryWithAddress{}
 		err := json.Unmarshal(body, command)
@@ -129,7 +130,7 @@ func commandHandler(w http.ResponseWriter, r *http.Request, _ domain.UserId) {
 			return
 		}
 		command.WineryId = domain.WineryId(storage.NextWineryIdentifier())
-		storage.Dispatch(*command)
+		event_listener.Dispatch(*command)
 	}
 }
 

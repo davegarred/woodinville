@@ -1,9 +1,10 @@
-package storage
+package event_listener
 
 import (
 	"testing"
 	"github.com/davegarred/woodinville/domain"
 	"github.com/stretchr/testify/assert"
+	"github.com/davegarred/woodinville/storage"
 )
 
 var (
@@ -12,20 +13,20 @@ var (
 )
 
 func TestAreaQueryEventListener_OnWineryCreated(t *testing.T) {
-	areaQuery.Wineries = []domain.WineryId{}
-	assert.Equal(t, 0, len(FindArea().Wineries))
+	storage.ResetTests()
+	assert.Equal(t, 0, len(storage.FindArea().Wineries))
 
 	areaEL.OnWineryCreated(domain.WineryCreated{wineryId, wineryName})
 
-	resultArea := FindArea()
+	resultArea := storage.FindArea()
 	assert.Equal(t, 1, len(resultArea.Wineries))
 	assert.Equal(t, wineryId, resultArea.Wineries[0])
 }
 
 func TestAreaQueryEventListener_OnAreaWineryRecommended(t *testing.T) {
-	areaQuery.Wineries = []domain.WineryId{}
+	storage.ResetTests()
 
 	areaEL.OnAreaWineryRecommended(domain.AreaWineryRecommended{domain.AreaId("SEA"), wineryName, "11234 Road St.", "Woodinville", "98111" })
 
-	assert.Equal(t, 1, len(areaQuery.RecommendedWineries))
+	assert.Equal(t, 1, len(storage.FindArea().RecommendedWineries))
 }
