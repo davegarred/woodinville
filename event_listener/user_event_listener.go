@@ -3,8 +3,6 @@ package event_listener
 import (
 	"github.com/davegarred/woodinville/domain"
 	"github.com/davegarred/woodinville/query"
-	"github.com/davegarred/cqrs"
-	"fmt"
 	"github.com/davegarred/woodinville/storage"
 )
 
@@ -12,7 +10,6 @@ import (
 type UserQueryEventListener struct {}
 
 func (*UserQueryEventListener) OnUserCreated(e domain.UserCreated) {
-	fmt.Println(&cqrs.QueryEventListener{})
 	q := &query.UserQuery{}
 	q.UserId = e.UserId
 	q.Name = e.Name

@@ -1,4 +1,5 @@
 .idea
+nohup.out
 /secrets.*
 /wine
 /wine_image.tar
